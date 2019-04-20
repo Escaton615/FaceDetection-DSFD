@@ -66,7 +66,9 @@ def bbox_vote(det):
         det_accu[:, 0:4] = det_accu[:, 0:4] * np.tile(det_accu[:, -1:], (1, 4))
         max_score = np.max(det_accu[:, 4])
         det_accu_sum = np.zeros((1, 5))
-        det_accu_sum[:, 0:4] = np.sum(det_accu[:, 0:4], axis=0) / np.sum(det_accu[:, -1:])
+        sum = np.sum(det_accu[:, 0:4], axis=0)
+        sum2 = np.sum(det_accu[:, -1:])
+        det_accu_sum[:, 0:4] = sum / sum2
         det_accu_sum[:, 4] = max_score
         try:
             dets = np.row_stack((dets, det_accu_sum))
@@ -91,7 +93,7 @@ def infer(net , img , transform , thresh , cuda , shrink):
     if shrink != 1:
         img = cv2.resize(img, None, None, fx=shrink, fy=shrink, interpolation=cv2.INTER_LINEAR)
     x = torch.from_numpy(transform(img)[0]).permute(2, 0, 1)
-    x = Variable(x.unsqueeze(0) , volatile=True)
+    x = (x.unsqueeze(0))
     if cuda:
         x = x.cuda()
     #print (shrink , x.shape)
@@ -108,7 +110,7 @@ def infer(net , img , transform , thresh , cuda , shrink):
             #label_name = labelmap[i-1]
             pt = (detections[0, i, j, 1:]*scale).cpu().numpy()
             coords = (pt[0], pt[1], pt[2], pt[3]) 
-            det.append([pt[0], pt[1], pt[2], pt[3], score])
+            det.append([pt[0], pt[1], pt[2], pt[3], score.item()])
             j += 1
     if (len(det)) == 0:
         det = [ [0.1,0.1,0.2,0.2,0.01] ]
@@ -189,7 +191,7 @@ def vis_detections(im,  dets, image_name , thresh=0.5):
     plt.tight_layout()
     plt.savefig(args.save_folder+image_name, dpi=fig.dpi)
 
-def test_oneimage():
+def t_oneimage():
     # load net
     cfg = widerface_640
     num_classes = len(WIDERFace_CLASSES) + 1 # +1 background
@@ -245,4 +247,5 @@ def test_oneimage():
 
 
 if __name__ == '__main__':
-    test_oneimage()
+    with torch.no_grad():
+        t_oneimage()

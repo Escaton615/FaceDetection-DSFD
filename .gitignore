@@ -1,0 +1,8 @@
+
+\.idea/
+
+*.pyc
+
+weights/WIDERFace_DSFD_RES152\.pth
+
+eval_tools/face\.png
