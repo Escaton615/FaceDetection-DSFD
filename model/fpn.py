@@ -100,7 +100,7 @@ class _FPN(nn.Module):
         So we choose bilinear upsample which supports arbitrary output sizes.
         '''
         _,_,H,W = y.size()
-        return F.upsample(x, size=(H,W), mode='bilinear') + y
+        return F.upsample(x, size=(H,W), mode='bilinear', align_corners=True) + y
 
     def _PyramidRoI_Feat(self, feat_maps, rois, im_info):
         ''' roi pool on pyramid feature maps'''
