@@ -3,13 +3,14 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
-from layers import *
-from data import  widerface_640
+# from facedetection_dsfd import data, layers, model
+from facedetection_dsfd.layers import *
+from facedetection_dsfd.data import  widerface_640
 import os
 import pdb
-from model.detnet_backbone import *
+from facedetection_dsfd.model.detnet_backbone import *
 import torchvision
-#import pretrainedmodels
+# import pretrainedmodels
 
 cfg = widerface_640
 
