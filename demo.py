@@ -26,6 +26,7 @@ import time
 def bbox_vote(det):
     order = det[:, 4].ravel().argsort()[::-1]
     det = det[order, :]
+    dets = None
     while det.shape[0] > 0:
         # IOU
         area = (det[:, 2] - det[:, 0] + 1) * (det[:, 3] - det[:, 1] + 1)
@@ -54,8 +55,11 @@ def bbox_vote(det):
             dets = np.row_stack((dets, det_accu_sum))
         except:
             dets = det_accu_sum
-    dets = dets[0:750, :]
+    if dets is not None:
+        dets = dets[0:750, :]
     return dets
+
+
 
 def write_to_txt(f, det , event , im_name):
     f.write('{:s}\n'.format(event + '/' + im_name))
